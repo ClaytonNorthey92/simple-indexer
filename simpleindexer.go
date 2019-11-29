@@ -1,70 +1,43 @@
 package main
 
 import (
-	"fmt"
+	"sort"
+	"strings"
 )
 
-type WebPageWithCount struct {
-	page  *WebPage
-	count uint
-}
-
-// SimpleIndexer is the in-memory index for word --> web page mapping
 type SimpleIndexer struct {
-	webPages []WebPage
-	urls     map[string]*WebPage
-	words    map[string]map[string]*WebPageWithCount
+	index []WebPage
 }
 
 func NewSimpleIndexer() *SimpleIndexer {
 	return &SimpleIndexer{
-		webPages: []WebPage{},
-		urls:     map[string]*WebPage{},
-		words:    map[string]map[string]*WebPageWithCount{},
+		index: []WebPage{},
 	}
 }
 
-func (s *SimpleIndexer) PagesForWord(word string) []WebPageWithCount {
-	foundWord := s.words[word]
-	if foundWord == nil {
-		return []WebPageWithCount{}
-	}
-
-	w := make([]WebPageWithCount, len(foundWord))
-	i := 0
-	for _, v := range foundWord {
-		w[i] = *v
-		i++
-	}
-
-	return w
+func (s *SimpleIndexer) IndexTextForPage(pageContent string, url string, title string) {
+	s.index = append(s.index, WebPage{
+		URL:     url,
+		Title:   title,
+		Content: pageContent,
+	})
 }
 
-func (s *SimpleIndexer) IndexWord(word string, page WebPage) error {
-	webPage := s.urls[page.URL]
-	if webPage == nil {
-		s.webPages = append(s.webPages, page)
-		s.urls[page.URL] = &s.webPages[len(s.webPages)-1]
-		webPage = s.urls[page.URL]
-	} else if webPage.Title != page.Title {
-		return fmt.Errorf("mismatch in title, trying to index %v, found %v", page, webPage)
-	}
+func (s *SimpleIndexer) GetPagesForWord(word string) SortableWebPagesWithCount {
+	pages := make(SortableWebPagesWithCount, len(s.index))
 
-	if s.words[word] == nil {
-		s.words[word] = map[string]*WebPageWithCount{
-			page.URL: &WebPageWithCount{
-				page:  webPage,
-				count: 1,
+	for i, v := range s.index {
+		count := strings.Count(v.Content, word)
+		pages[i] = WebPageWithCount{
+			Count: uint(count),
+			WebPage: WebPage{
+				URL:   v.URL,
+				Title: v.Title,
 			},
 		}
-	} else if s.words[word][webPage.URL] == nil {
-		s.words[word][webPage.URL] = &WebPageWithCount{
-			page:  webPage,
-			count: 1,
-		}
-	} else {
-		s.words[word][webPage.URL].count++
 	}
 
-	return nil
+	sort.Sort(pages)
+
+	return pages
 }
