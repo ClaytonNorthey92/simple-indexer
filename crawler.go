@@ -2,23 +2,25 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/gocolly/colly"
 	striptags "github.com/grokify/html-strip-tags-go"
 )
 
-var depth = 3
+var depth = 2
 
 var statusInProgress = "in progress"
 var statusFailed = "failed"
 var statusSucceeded = "succeeded"
 
 type CrawlJob struct {
-	ID                 uint
-	Status             string
-	IndexedPageCount   uint
-	NewWordsAddedCount uint
+	ID                 uint   `json:"id"`
+	Status             string `json:"status"`
+	IndexedPageCount   uint   `json:"indexed-page-count"`
+	NewWordsAddedCount uint   `json:"new-words-added-count"`
+	Details            string `json:"details"`
 }
 
 type Crawler interface {
@@ -67,9 +69,11 @@ func (s *SimpleCrawler) Crawl(url string, i Indexer) error {
 		title := e.Text
 		url := e.Request.URL
 		body := e.Response.Body
+		re := regexp.MustCompile(`<script>.+<\/script>`)
+		text := re.ReplaceAllString(string(body), "")
 		fmt.Printf("found title for %s\n", url)
 		titles[url.String()] = title
-		text := striptags.StripTags(string(body))
+		text = striptags.StripTags(string(body))
 		i.IndexTextForPage(text, url.String(), title)
 	})
 
@@ -90,6 +94,7 @@ func (s *SimpleCrawler) Crawl(url string, i Indexer) error {
 	err := c.Visit(url)
 	if err != nil {
 		job.Status = statusFailed
+		job.Details = err.Error()
 		return err
 	}
 

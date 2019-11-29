@@ -1,8 +1,10 @@
 package main
 
+import "strings"
+
 type WebPageWithCount struct {
 	WebPage
-	Count uint
+	Count uint `json:"count"`
 }
 
 type SortableWebPagesWithCount []WebPageWithCount
@@ -30,10 +32,12 @@ func NewFastLookupIndexer() *FastLookupIndexer {
 }
 
 func (s *FastLookupIndexer) GetPagesForWord(word string) []WebPageWithCount {
+	word = strings.ToLower(word)
 	return s.index[word]
 }
 
 func (s *FastLookupIndexer) IndexTextForPage(pageContent string, url string, title string) {
+	pageContent = strings.ToLower(pageContent)
 	contentSize := len(pageContent)
 	for i, _ := range pageContent {
 		for step := i; step < contentSize; step++ {
