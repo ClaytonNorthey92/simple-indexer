@@ -42,6 +42,12 @@ func main() {
 		c.JSON(200, jobs)
 	})
 
+	r.DELETE("/index", func(c *gin.Context) {
+		allowInsecure(c)
+		si = NewSimpleIndexer()
+		c.Status(204)
+	})
+
 	r.GET("/search", func(c *gin.Context) {
 		allowInsecure(c)
 		var searchParams SearchParams
