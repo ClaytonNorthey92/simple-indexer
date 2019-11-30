@@ -8,27 +8,39 @@ export default class Jobs extends React.Component {
         this.state = {
             jobs: []
         }
+
+        this.refreshJobs = this.refreshJobs.bind(this)
     }
     
-    componentDidMount() {
+    refreshJobs() {
         const component = this;
-        setInterval(() => {
-            request.get("http://localhost:8080/jobs")
-            .then((results) => {
-                component.setState({
-                    jobs: JSON.parse(results).map(r => ({
-                        status: r.status,
-                        indexedPageCount: r['indexed-page-count'],
-                        indexedWordCount: r['indexed-word-count'],
-                        id: r.id,
-                        details: r.details
-                    }))
-                })
-            }).catch(e => {
-                // handle error, maybe toast?
+        request.get("http://localhost:8080/jobs")
+        .then((results) => {
+            component.setState({
+                jobs: JSON.parse(results).map(r => ({
+                    status: r.status,
+                    indexedPageCount: r['indexed-page-count'],
+                    indexedWordCount: r['new-words-added-count'],
+                    id: r.id,
+                    details: r.details,
+                    startUrl: r['start-url']
+                }))
             })
-        }, 500)
+        }).catch(e => {
+            // handle error, maybe toast?
+        })
+    }
 
+    componentDidMount() {
+        this.refreshJobs();
+        const id = setInterval(this.refreshJobs, 2000);
+        this.setState({
+            intervalId: id
+        })
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.intervalId)
     }
 
     render() {
@@ -44,10 +56,19 @@ export default class Jobs extends React.Component {
                     Index Job {j.id}
                 </div>
                 <div>
-                    {j.status}
+                    Starting URL: {j.startUrl}
                 </div>
                 <div>
-                    {j.details}
+                    Status: {j.status}
+                </div>
+                <div>
+                    Indexed {j.indexedPageCount} Pages
+                </div>
+                <div>
+                    Indexed {j.indexedWordCount} Words    
+                </div>
+                <div>
+                    <b>DETAILS: {j.details}</b>
                 </div>
             </ListGroup.Item>
 

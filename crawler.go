@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"time"
 
 	"github.com/gocolly/colly"
 	striptags "github.com/grokify/html-strip-tags-go"
 )
 
-var depth = 2
+var depth = 3
 
 var statusInProgress = "in progress"
 var statusFailed = "failed"
@@ -21,6 +22,21 @@ type CrawlJob struct {
 	IndexedPageCount   uint   `json:"indexed-page-count"`
 	NewWordsAddedCount uint   `json:"new-words-added-count"`
 	Details            string `json:"details"`
+	StartURL           string `json:"start-url"`
+}
+
+type SortableCrawlJobs []*CrawlJob
+
+func (s SortableCrawlJobs) Len() int {
+	return len(s)
+}
+
+func (s SortableCrawlJobs) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s SortableCrawlJobs) Less(i, j int) bool {
+	return s[i].ID > s[j].ID
 }
 
 type Crawler interface {
@@ -35,10 +51,11 @@ func NewSimpleCrawler() *SimpleCrawler {
 }
 
 type SimpleCrawler struct {
-	jobs []*CrawlJob
+	jobs SortableCrawlJobs
 }
 
-func (s *SimpleCrawler) Jobs() []*CrawlJob {
+func (s *SimpleCrawler) Jobs() SortableCrawlJobs {
+	sort.Sort(sort.Reverse(s.jobs))
 	return s.jobs
 }
 
@@ -48,6 +65,7 @@ func (s *SimpleCrawler) Crawl(url string, i Indexer) error {
 		IndexedPageCount:   0,
 		NewWordsAddedCount: 0,
 		ID:                 uint(time.Now().Nanosecond()),
+		StartURL:           url,
 	}
 	if s.jobs == nil {
 		s.jobs = []*CrawlJob{

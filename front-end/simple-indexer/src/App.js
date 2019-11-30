@@ -1,24 +1,82 @@
 import React from 'react';
 import './App.css';
 import Jobs from './Jobs';
+import Search from './Search';
 import Indexer from './Indexer';
-import { Row, Container, Col } from 'react-bootstrap'
+import { Row, Container, Col, ButtonToolbar, Button } from 'react-bootstrap'
 
-function App() {
-  return (
-    <div className="App">
-      <Container>
+class App extends React.Component {
+  activeScreenIndexer = "indexer"
+  activeScreenSearch = "search"
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      activeScreen: this.activeScreenIndexer
+    }
+    this.setActiveScreenIndexer = this.setActiveScreenIndexer.bind(this)
+    this.setActiveScreenSearch  = this.setActiveScreenSearch.bind(this)
+  }
+
+  setActiveScreenIndexer() {
+    this.setState({
+      activeScreen: this.activeScreenIndexer
+    })
+  }
+
+  setActiveScreenSearch() {
+    this.setState({
+      activeScreen: this.activeScreenSearch
+    })
+  }
+
+  render() {
+    let body;
+    if (this.state.activeScreen === this.activeScreenIndexer) {
+      body = (
         <Row>
-        <Col>
-          <Indexer></Indexer>
-        </Col>
-        <Col>
-          <Jobs></Jobs>
-        </Col>
+          <Col>
+            <Indexer></Indexer>
+          </Col>
+          <Col>
+            <Jobs></Jobs>
+          </Col>
         </Row>
-      </Container>
-    </div>
-  );
+      );
+    }
+
+    if (this.state.activeScreen === this.activeScreenSearch) {
+      body = (
+        <Row>
+          <Col>
+            <Search></Search>
+          </Col>
+        </Row>
+      );
+    }
+
+    return (
+      <div className="App">
+        <Container>
+          <Row>
+            <ButtonToolbar>
+            <Col>
+              <Button variant={this.state.activeScreen === this.activeScreenIndexer ? "primary" : "outline-primary"} onClick={this.setActiveScreenIndexer}>
+                Index
+              </Button>
+              </Col>
+              <Col>
+              <Button variant={this.state.activeScreen === this.activeScreenSearch ? "primary" : "outline-primary"} onClick={this.setActiveScreenSearch}>
+                Search
+              </Button>
+            </Col>
+            </ButtonToolbar>
+          </Row>
+          {body}
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default App;

@@ -6,7 +6,8 @@ export default class Indexer extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            url: ""
+            url: "",
+            urlInvalid: false
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateQuery = this.updateQuery.bind(this);
@@ -15,6 +16,7 @@ export default class Indexer extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        const component = this;
         request({
             method: "POST",
             uri: "http://localhost:8080/index",
@@ -24,7 +26,13 @@ export default class Indexer extends React.Component {
             json: true
         })
         .then((results) => {
+            component.setState({
+                urlInvalid: false
+            })
         }).catch(err => {
+            component.setState({
+                urlInvalid: true
+            })
         })
     }
 
@@ -42,7 +50,7 @@ export default class Indexer extends React.Component {
                 <Form.Label>
                     URL
                 </Form.Label>
-                <Form.Control type="text" onChange={this.updateQuery}>
+                <Form.Control isInvalid={this.state.urlInvalid} type="text" onChange={this.updateQuery}>
                 </Form.Control>
                 <Form.Text>
                     enter the url you want to start indexing from
