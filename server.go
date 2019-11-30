@@ -18,10 +18,12 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/jobs", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
 		c.JSON(200, cr.Jobs())
 	})
 
 	r.GET("/search", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
 		var searchParams SearchParams
 		if err := c.ShouldBindQuery(&searchParams); err != nil {
 			panic(err)
@@ -31,6 +33,9 @@ func main() {
 	})
 
 	r.POST("/index", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "Content-Type")
+
 		var indexBody IndexPostBody
 		if err := c.ShouldBindJSON(&indexBody); err != nil {
 			panic(err)
@@ -39,6 +44,15 @@ func main() {
 			cr.Crawl(indexBody.URL, si)
 		}()
 		c.Status(201)
+	})
+
+	r.OPTIONS("/index", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "Content-Type")
+		c.Header("Accept", "*")
+		c.Header("Allow", "POST")
+		c.Header("Access-Control-Request-Method", "POST")
+		c.Status(200)
 	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
