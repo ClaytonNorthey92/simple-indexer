@@ -13,5 +13,5 @@ type WebPage struct {
 type Indexer interface {
 	// map of word --> web page
 	GetPagesForWord(word string) SortableWebPagesWithCount
-	IndexTextForPage(pageContent string, url string, title string)
+	IndexTextForPage(pageContent string, url string, title string) int
 }

@@ -8,7 +8,8 @@ export default class Search extends React.Component {
         super(props)
         this.state = {
             query: "",
-            searchResults: []
+            searchResults: [],
+            extraDetails: ""
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -16,6 +17,9 @@ export default class Search extends React.Component {
     }
 
     updateQuery(event) {
+        if (event.target.value === this.state.query) {
+            return;
+        }
         this.setState({
             query: event.target.value
         });
@@ -29,22 +33,30 @@ export default class Search extends React.Component {
                 q: this.state.query
             }
         }).then(result => {
-            component.setState({
-                searchResults: JSON.parse(result)
-            })
+            const structuredResults = JSON.parse(result);
+            if (!structuredResults.length) {
+                this.setState({
+                    extraDetails: "no results found",
+                    searchResults: []
+                })
+            } else {
+                component.setState({
+                    extraDetails: null,
+                    searchResults: structuredResults
+                })
+            }
         }).catch(err => {
-            debugger;
         })
     }
     
     render() {
-        const results = this.state.searchResults.map(s => (
+        let results = this.state.searchResults.map(s => (
             <ListGroup.Item key={s.url}>
                 <div>
                     <a href={s.url} >{s.title}</a>
                 </div>
                 <div>
-                    Found {s.count} matches for "{this.state.query}"
+                    Found {s.count} matches
                 </div>
             </ListGroup.Item>
         ))
@@ -69,6 +81,9 @@ export default class Search extends React.Component {
                     </Form>
                 </Row>
                 <Row>
+                    <div>
+                        {this.state.extraDetails}
+                    </div>
                     <ListGroup>
                         {results}
                     </ListGroup>

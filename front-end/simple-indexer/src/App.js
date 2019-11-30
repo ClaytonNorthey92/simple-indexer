@@ -4,6 +4,7 @@ import Jobs from './Jobs';
 import Search from './Search';
 import Indexer from './Indexer';
 import { Row, Container, Col, ButtonToolbar, Button } from 'react-bootstrap'
+import * as request from 'request-promise';
 
 class App extends React.Component {
   activeScreenIndexer = "indexer"
@@ -16,6 +17,10 @@ class App extends React.Component {
     }
     this.setActiveScreenIndexer = this.setActiveScreenIndexer.bind(this)
     this.setActiveScreenSearch  = this.setActiveScreenSearch.bind(this)
+  }
+
+  deleteIndex() {
+    request.delete("http://localhost:8080/index")
   }
 
   setActiveScreenIndexer() {
@@ -60,16 +65,16 @@ class App extends React.Component {
         <Container>
           <Row>
             <ButtonToolbar>
-            <Col>
-              <Button variant={this.state.activeScreen === this.activeScreenIndexer ? "primary" : "outline-primary"} onClick={this.setActiveScreenIndexer}>
-                Index
-              </Button>
+              <Col>
+                <Button variant={this.state.activeScreen === this.activeScreenIndexer ? "primary" : "outline-primary"} onClick={this.setActiveScreenIndexer}>
+                  Index
+                </Button>
               </Col>
               <Col>
-              <Button variant={this.state.activeScreen === this.activeScreenSearch ? "primary" : "outline-primary"} onClick={this.setActiveScreenSearch}>
-                Search
-              </Button>
-            </Col>
+                <Button variant={this.state.activeScreen === this.activeScreenSearch ? "primary" : "outline-primary"} onClick={this.setActiveScreenSearch}>
+                  Search
+                </Button>
+              </Col>
             </ButtonToolbar>
           </Row>
           {body}

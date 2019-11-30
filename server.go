@@ -19,6 +19,7 @@ type UserError struct {
 func allowInsecure(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	c.Header("Access-Control-Allow-Headers", "Content-Type")
+	c.Header("Access-Control-Allow-Methods", "*")
 }
 
 func sendUserError(c *gin.Context, err error) {
@@ -45,6 +46,7 @@ func main() {
 	r.DELETE("/index", func(c *gin.Context) {
 		allowInsecure(c)
 		si = NewSimpleIndexer()
+		cr = NewSimpleCrawler()
 		c.Status(204)
 	})
 

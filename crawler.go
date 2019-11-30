@@ -10,11 +10,13 @@ import (
 	striptags "github.com/grokify/html-strip-tags-go"
 )
 
-var depth = 3
+const Depth = 3
 
-var statusInProgress = "in progress"
-var statusFailed = "failed"
-var statusSucceeded = "succeeded"
+const StatusInProgress = "in progress"
+
+const StatusFailed = "failed"
+
+const StatusSucceeded = "succeeded"
 
 type CrawlJob struct {
 	ID                 uint   `json:"id"`
@@ -61,7 +63,7 @@ func (s *SimpleCrawler) Jobs() SortableCrawlJobs {
 
 func (s *SimpleCrawler) Crawl(url string, i Indexer) error {
 	job := &CrawlJob{
-		Status:             statusInProgress,
+		Status:             StatusInProgress,
 		IndexedPageCount:   0,
 		NewWordsAddedCount: 0,
 		ID:                 uint(time.Now().Nanosecond()),
@@ -76,7 +78,7 @@ func (s *SimpleCrawler) Crawl(url string, i Indexer) error {
 	}
 
 	c := colly.NewCollector()
-	c.MaxDepth = depth
+	c.MaxDepth = Depth
 	c.Limit(&colly.LimitRule{
 		Delay: 5 * time.Second,
 	})
@@ -92,7 +94,8 @@ func (s *SimpleCrawler) Crawl(url string, i Indexer) error {
 		fmt.Printf("found title for %s\n", url)
 		titles[url.String()] = title
 		text = striptags.StripTags(string(body))
-		i.IndexTextForPage(text, url.String(), title)
+		wordsIndexed := i.IndexTextForPage(text, url.String(), title)
+		job.NewWordsAddedCount += uint(wordsIndexed)
 	})
 
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
@@ -111,12 +114,12 @@ func (s *SimpleCrawler) Crawl(url string, i Indexer) error {
 
 	err := c.Visit(url)
 	if err != nil {
-		job.Status = statusFailed
+		job.Status = StatusFailed
 		job.Details = err.Error()
 		return err
 	}
 
-	job.Status = statusSucceeded
+	job.Status = StatusSucceeded
 
 	return nil
 }

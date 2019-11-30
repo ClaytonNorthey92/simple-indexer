@@ -11,6 +11,8 @@ export default class Indexer extends React.Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateQuery = this.updateQuery.bind(this);
+        this.deleteIndex = this.deleteIndex.bind(this)
+
     }
 
 
@@ -43,23 +45,33 @@ export default class Indexer extends React.Component {
         })
     }
 
+    deleteIndex() {
+        request.delete("http://localhost:8080/index")
+      }
+
     render() {
         return (
-            <Form onSubmit={this.handleSubmit}>
-            <Form.Group controlId="formIndexer">
-                <Form.Label>
-                    URL
-                </Form.Label>
-                <Form.Control isInvalid={this.state.urlInvalid} type="text" onChange={this.updateQuery}>
-                </Form.Control>
-                <Form.Text>
-                    enter the url you want to start indexing from
-                </Form.Text>
-            </Form.Group>
-            <Button type="submit" variant="primary">
-                Index
-            </Button>
-        </Form>
+            <div>
+                <Button variant="outline-danger" size="sm" onClick={this.deleteIndex}>
+                    Delete Index
+                </Button>
+                <Form onSubmit={this.handleSubmit}>
+                    <Form.Group controlId="formIndexer">
+                        <Form.Label>
+                            URL
+                        </Form.Label>
+                        <Form.Control isInvalid={this.state.urlInvalid} type="text" onChange={this.updateQuery}>
+                        </Form.Control>
+                        <Form.Text>
+                            enter the url you want to start indexing from
+                        </Form.Text>
+                    </Form.Group>
+                    <Button type="submit" variant="primary">
+                        Index
+                    </Button>
+                </Form>
+            </div>
+
         )
     }
 }

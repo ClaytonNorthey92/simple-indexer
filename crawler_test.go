@@ -6,6 +6,7 @@ import (
 )
 
 func Test_CanCrawlGithub(t *testing.T) {
+	t.Skip()
 	si := NewSimpleIndexer()
 	sc := NewSimpleCrawler()
 

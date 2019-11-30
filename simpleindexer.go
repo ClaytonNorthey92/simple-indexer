@@ -15,7 +15,7 @@ func NewSimpleIndexer() *SimpleIndexer {
 	}
 }
 
-func (s *SimpleIndexer) IndexTextForPage(pageContent string, url string, title string) {
+func (s *SimpleIndexer) IndexTextForPage(pageContent string, url string, title string) int {
 	pageContent = strings.ToLower(pageContent)
 	for i, v := range s.index {
 		if v.URL == url {
@@ -24,7 +24,7 @@ func (s *SimpleIndexer) IndexTextForPage(pageContent string, url string, title s
 				Title:   title,
 				Content: pageContent,
 			}
-			return
+			return 0
 		}
 	}
 
@@ -33,6 +33,8 @@ func (s *SimpleIndexer) IndexTextForPage(pageContent string, url string, title s
 		Title:   title,
 		Content: pageContent,
 	})
+
+	return 0
 }
 func (s *SimpleIndexer) GetPagesForWord(word string) SortableWebPagesWithCount {
 	word = strings.ToLower(word)
