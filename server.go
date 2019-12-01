@@ -31,7 +31,7 @@ func sendUserError(c *gin.Context, err error) {
 
 func main() {
 	cr := NewSimpleCrawler()
-	si := NewSimpleIndexer()
+	si := NewDistanceIndexer()
 	r := gin.Default()
 
 	r.GET("/jobs", func(c *gin.Context) {
@@ -45,7 +45,7 @@ func main() {
 
 	r.DELETE("/index", func(c *gin.Context) {
 		allowInsecure(c)
-		si = NewSimpleIndexer()
+		si = NewDistanceIndexer()
 		cr = NewSimpleCrawler()
 		c.Status(204)
 	})
