@@ -134,5 +134,5 @@ func (d *PartialWordIndexer) IndexTextForPage(pageContent string, url string, ti
 		})
 	}
 	d.unlock()
-	return len(d.index)
+	return len(text)
 }
