@@ -43,9 +43,6 @@ class App extends React.Component {
           <Col>
             <Indexer></Indexer>
           </Col>
-          <Col>
-            <Jobs></Jobs>
-          </Col>
         </Row>
       );
     }
@@ -77,7 +74,14 @@ class App extends React.Component {
               </Col>
             </ButtonToolbar>
           </Row>
-          {body}
+          <Row>
+            <Col>
+              {body}
+            </Col>
+            <Col>
+              <Jobs></Jobs>
+            </Col>
+          </Row>
         </Container>
       </div>
     );

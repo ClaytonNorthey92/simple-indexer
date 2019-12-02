@@ -50,16 +50,21 @@ export default class Search extends React.Component {
     }
     
     render() {
+        let extraDetails = this.state.extraDetails;
         let results = this.state.searchResults.map(s => (
             <ListGroup.Item key={s.url}>
                 <div>
-                    <a href={s.url} >{s.title}</a>
+                    <a href={s.url} target="_blank">{s.title}</a>
                 </div>
                 <div>
-                    Found {s.count} matches
+                    Occurances: {s.count}
                 </div>
             </ListGroup.Item>
         ))
+
+        if (results && results.length) {
+            extraDetails = `found ${results.length} results`;
+        }
 
         return (
             <Container>
@@ -82,7 +87,7 @@ export default class Search extends React.Component {
                 </Row>
                 <Row>
                     <div>
-                        {this.state.extraDetails}
+                        {extraDetails}
                     </div>
                     <ListGroup>
                         {results}

@@ -4,15 +4,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type IndexPostBody struct {
+type indexPostBody struct {
 	URL string `json:"url" binding:"required"`
 }
 
-type SearchParams struct {
+type searchParams struct {
 	Query string `form:"q" binding:"required"`
 }
 
-type UserError struct {
+type userError struct {
 	Error string `json:"error"`
 }
 
@@ -23,19 +23,24 @@ func allowInsecure(c *gin.Context) {
 }
 
 func sendUserError(c *gin.Context, err error) {
-	userError := UserError{
+	userError := userError{
 		Error: err.Error(),
 	}
 	c.JSON(400, userError)
 }
 
 func main() {
+
 	cr := NewSimpleCrawler()
-	si := NewDistanceIndexer()
+	si := NewPartialWordIndexer()
 	r := gin.Default()
+	stopChannels := new([]chan bool)
+
+	r.Use(func(c *gin.Context) {
+		allowInsecure(c)
+	})
 
 	r.GET("/jobs", func(c *gin.Context) {
-		allowInsecure(c)
 		jobs := cr.Jobs()
 		if len(jobs) > 5 {
 			jobs = jobs[:5]
@@ -44,15 +49,19 @@ func main() {
 	})
 
 	r.DELETE("/index", func(c *gin.Context) {
-		allowInsecure(c)
-		si = NewDistanceIndexer()
+		for _, c := range *stopChannels {
+			c <- true
+		}
+
+		stopChannels = new([]chan bool)
+		si.Clear()
 		cr = NewSimpleCrawler()
+
 		c.Status(204)
 	})
 
 	r.GET("/search", func(c *gin.Context) {
-		allowInsecure(c)
-		var searchParams SearchParams
+		var searchParams searchParams
 		if err := c.ShouldBindQuery(&searchParams); err != nil {
 			sendUserError(c, err)
 			return
@@ -62,21 +71,19 @@ func main() {
 	})
 
 	r.OPTIONS("/index", func(c *gin.Context) {
-		allowInsecure(c)
 		c.Status(200)
 	})
 
 	r.POST("/index", func(c *gin.Context) {
-		allowInsecure(c)
-
-		var indexBody IndexPostBody
+		var indexBody indexPostBody
 		if err := c.ShouldBindJSON(&indexBody); err != nil {
 			sendUserError(c, err)
 			return
 		}
-		go func() {
-			cr.Crawl(indexBody.URL, si)
-		}()
+
+		stop := make(chan bool, 1)
+		*stopChannels = append(*stopChannels, stop)
+		go cr.Crawl(indexBody.URL, si, stop)
 		c.Status(201)
 	})
 

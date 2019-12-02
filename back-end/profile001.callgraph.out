@@ -1,0 +1,126 @@
+positions: instr line
+events: inuse_space(kB)
+
+ob=
+fl=(1) /usr/local/go/src/regexp/syntax/parse.go
+fn=(1) regexp/syntax.(*parser).newRegexp
+0x10e9e6b 94 512
+
+ob=
+fl=(2) /usr/local/go/src/regexp/onepass.go
+fn=(2) regexp.makeOnePass.func1
++106724 387 512
+
+ob=
+fl=(3) /usr/local/go/src/runtime/proc.go
+fn=(3) runtime.main
+-869784 188 0
+cfl=(4) /Users/claytonnorthey/go/pkg/mod/gopkg.in/go-playground/validator.v9@v9.29.1/regexes.go
+cfn=(4) gopkg.in/go-playground/validator%2ev9.init.ializers
+calls=0 +4143371 61
+* * 512
+cfl=(4)
+cfn=(4)
+calls=0 +4144021 87
+* * 512
+
+ob=
+fl=(1)
+fn=(5) regexp/syntax.Parse
++747135 774 0
+cfl=(1)
+cfn=(6) regexp/syntax.(*parser).parseClass
+calls=0 +760717 1534
+* * 512
+
+ob=
+fl=(1)
+fn=(6)
++13582 1534 0
+cfl=(1)
+cfn=(1)
+calls=0 +15925 94
+* * 512
+
+ob=
+fl=(2)
+fn=(7) regexp.makeOnePass
++81959 448 0
+cfl=(2)
+cfn=(8) regexp.makeOnePass.func1 [2/2]
+calls=0 +107253 323
+* * 512
+
+ob=
+fl=(2)
+fn=(9) regexp.compileOnePass
++691 500 0
+cfl=(2)
+cfn=(7)
+calls=0 * 448
+* * 512
+
+ob=
+fl=(5) /usr/local/go/src/regexp/regexp.go
+fn=(10) regexp.compile
++539 168 0
+cfl=(1)
+cfn=(5)
+calls=0 -96232 774
+* * 512
++167 187 0
+cfl=(2)
+cfn=(9)
+calls=0 -539 500
+* * 512
+
+ob=
+fl=(5)
+fn=(11) regexp.MustCompile
++2468 270 0
+cfl=(5)
+cfn=(12) regexp.Compile [1/2]
+calls=0 +2510 131
+* * 512
+* 270 0
+cfl=(5)
+cfn=(13) regexp.Compile [2/2]
+calls=0 +42 131
+* * 512
+
+ob=
+fl=(5)
+fn=(14) regexp.Compile
++42 131 0
+cfl=(5)
+cfn=(15) regexp.compile [1/2]
+calls=0 -2635 168
+* * 512
+* 131 0
+cfl=(5)
+cfn=(16) regexp.compile [2/2]
+calls=0 -2510 187
+* * 512
+
+ob=
+fl=(2)
+fn=(2)
++21387 323 0
+cfl=(2)
+cfn=(17) regexp.makeOnePass.func1 [1/2]
+calls=0 +23201 387
+* * 512
+
+ob=
+fl=(4)
+fn=(4)
++4145185 61 0
+cfl=(5)
+cfn=(18) regexp.MustCompile [1/2]
+calls=0 -21429 270
+* * 512
++650 87 0
+cfl=(5)
+cfn=(19) regexp.MustCompile [2/2]
+calls=0 -4166614 270
+* * 512

@@ -46,6 +46,7 @@ export default class Jobs extends React.Component {
     render() {
         const statuses = {
             'in progress': 'info',
+            'cancelled': "secondary",
             'succeeded': 'success',
             'failed': 'danger'
         }

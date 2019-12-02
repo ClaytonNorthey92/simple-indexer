@@ -1,3 +1,5 @@
+// +build integration
+
 package main
 
 import (
@@ -5,9 +7,8 @@ import (
 	"testing"
 )
 
-func Test_CanCrawlGithub(t *testing.T) {
-	t.Skip()
-	si := NewSimpleIndexer()
+func Test_CanCrawlStackOverflow(t *testing.T) {
+	si := NewPartialWordIndexer()
 	sc := NewSimpleCrawler()
 
 	sc.Crawl("https://stackoverflow.com/questions/1998681/xpath-selection-by-innertext", si)
