@@ -21,10 +21,15 @@ _Do not replicate_ - this program stores its index in memory, so you can not run
 
 _Hard-coded ports_ - port numbers are not configurable (via env variables, CLI args, etc.)
 
-_No CORS_ - CORS is disabled for the backend for local use, this program should never be used in production like this (I am not sure why you would though)
+_No CORS_ - CORS is disabled for the backend for local use, this program should never be used in production like this (I am not sure why you would though),
+if this were to be production-ready, I would suggest setting up a proxy like [envoy](https://www.envoyproxy.io/) or [nginx](https://www.nginx.com/) and hide the front-end
+and back-end services behind this, so they are only available in the container network
 
 _The frontend runs in dev mode_ - for simplicity, the frontend is a [react](https://reactjs.org/) application running in development mode, even in
 the Docker container
+
+_no logging library, just using stdout_ - for simplicity, just using stdout for logging, I have no need to set up log levels, but if I did I would use
+[logrus](https://github.com/sirupsen/logrus)
 
 ## Known bugs
 
