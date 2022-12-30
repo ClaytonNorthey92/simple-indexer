@@ -7,7 +7,7 @@ require (
 	github.com/antchfx/htmlquery v1.2.0 // indirect
 	github.com/antchfx/xmlquery v1.2.1 // indirect
 	github.com/antchfx/xpath v1.1.2 // indirect
-	github.com/gin-gonic/gin v1.5.0
+	github.com/gin-gonic/gin v1.7.0
 	github.com/go-test/deep v1.0.4
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gocolly/colly v1.2.0
